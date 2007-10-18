@@ -1,45 +1,157 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
 <html>
-<head>
-<title>Project Home Page</title>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-</head>
-
-<body bgcolor="#FFFFFF" text="#000000">
-<h1>Default project home page </h1>
-<p>Congratulations on your new java.net project! </p>
-<p>This page is the home page for your new project. This content is appearing 
-  because you have selected the option <b>Use project index.html</b>. To edit 
-  the information displayed on this page, just use CVS to check out your project's 
-  CVS repository and edit index.html in directory www. You can get more information 
-  on how to set-up your local CVS client, click on <b>Version Control</b> on the 
-  left nav bar. </p>
-<p>If you don't want to use CVS to manage your home page, click on the <b>Edit 
-  project</b> link on this page and unclick the option <b>Use project index.html</b>. 
-  Your project home page contents will be generated from the <b>Edit project</b> 
-  field <b>Description</b>. Edit the text on that field to change your home page 
-  contents. Click on <b>Submit changes</b> to save your edits. </p>
-<p>If you are looking for <a href="https://java-net.dev.java.net/ProjectPages.html#templates">sample 
-  home page templates</a>, check out the <a href="https://java-net.dev.java.net/ProjectPages.html">java.net 
-  Project Starter Kit</a>. Copy either of the templates into your project's html 
-  to get started on your project's home page. </p>
-<p>You can find lots of helpful information in the Starter Kit to get your project 
-  started. Some of the things you will find in there include:</p>
+  <head>
+    <title>Animated Transitions</title>
+  </head>
+  <body>
+  <center>
+  <h1>Animated Transitions</h1>
+  <h4>Chet Haase</h4>
+</center>
+<p>
 <ul>
-  <li>Hints on how to <a href="https://java-net.dev.java.net/ProjectPages.html#pages">set-up 
-    your project's</a> home page</li>
-  <li>Ideas on how to <a href="https://java-net.dev.java.net/ProjectPages.html#publicity">publicize 
-    your project</a> including RSS feeds</li>
-  <li>Hints on <a href="https://java-net.dev.java.net/pagedesign.html">project 
-    page HTML</a></li>
-  <li>Setting up project <a href="https://java-net.dev.java.net/ProjectPages.html#wiki">wiki 
-    pages</a></li>
-  <li>And places to go if <a href="https://java-net.dev.java.net/ProjectPages.html#feedback">you 
-    have questions</a>.</li>
+<li><a href="Overview">Overview</a></li>
+<li><a href="Downloads">Downloads</a></li>
+<li><a href="Resources">Resources</a></li>
+<li><a href="Overview">Change Log</a></li>
 </ul>
-<p>Remember that you will attract more new members and your project team will 
-  work more effectively if you, as the project owner, supply sufficient information 
-  about your project for visitors to your project space. Good luck with your new 
-  project! </p>
-</body>
+<h2>
+<a name="Overview">Overview</a>
+</h2>
+  <p>
+  This library, documented in Chapter 18 of the book
+ <a href="http://filthyrichclients.org">Filthy Rich Clients</a>,
+enables easy, automated transitions between different
+  UI screens of an application. The library works by creating and 
+configuring a <code>ScreenTransition</code> object, starting it
+when you want to run the transition, handling a single callback
+to an implementation of <code>TransitionTarget.setupNextScreen()</code>,
+and letting the library do everything else.
+</p>
+<p>
+The library figures out which components change
+between the before/after screens and then automatically runs
+animated effects for all of those changing components.
+Which effects are run depends on how the components change
+and whether there are any custom effects installed in the
+system.
+</p>
+<p>
+There is obviously a lot more to it, but I will leave the explanation
+of how it all works to the book, articles, and demos referenced
+in the <a href="Resources">Resources</a> section below.
+</p>
+<h2>
+<a name="Downloads">Downloads</a>
+</h2>
+<p>
+<b>Version 0.1</b> (October 17, 2007)
+</p>
+<p>
+<ul>
+<li><a href="http://download.java.net/javadesktop/animtrans/AnimatedTransitions-0.1.jar">
+Library</a>
+</li>
+<li><a href="http://download.java.net/javadesktop/animtrans/AnimatedTransitions-0.1-doc.zip">
+Javadocs</a>
+</li>
+<li><a href="http://download.java.net/javadesktop/animtrans/AnimatedTransitions-0.1-src.zip">
+Source</a>
+</li>
+</ul>
+</p>
+<h2>
+<a name="Resources">Resources</a>
+</h2>
+<p>
+The library is fully documented in the book 
+<a href="http://filthyrichclients.org">Filthy Rich Clients</a>
+(see Chapter 18, cleverly entitled "Animated Transitions").
+There is also a brief tutorial with a sample application
+in the java.net article
+"Create Moving Experiences with Animated Transitions".
+</p>
+<p>Finally, check out the demos on the 
+<a href="filthyrichclients.org">book's website</a>,
+particularly those for Chapter 18.
+</p>
+<p>
+Otherwise, feel free to download the library, the javadocs, and
+the source code. And start using it - move your users!
+</p>
+<h2>
+<a name="UpdateLog">Update Log</a>
+</h2>
+<p>
+<b>October 17, 2007</b>: Release 0.1 debuted!
+</p>
+<p>
+This is the first source release. It's nearly the same API as in
+<a href="http://filthyrichclients.org">the book</a> (changes
+are documented on the book's website's "Errata" page), although
+there have been some important performance and leak fixes since
+the initial demos were released.
+</p>
+<p>
+The library is, I subjectively think, a pretty cool utility for
+making screen transtions wayyyyyyyyyyyyyyyyyyyyyyyyyy way
+easier than they are if you're simply hand-coding all of the
+animations. However, there are rough edges to the API and
+the implementation that are worth noting. Think of these 
+as notes on what to expect, what not to expect, and what
+I hope to work on in future releases.
+</p>
+<ul>
+<li>API: There are a lot of methods that shouldn't be public, 
+but which happen to be just because of how the packages are 
+currently structured. This should be fixed soon. The actual
+API that you should use is actually quite small. The API
+that custom effect developers use is slightly larger. But
+the API exposed in the JavaDocs is larger than it needs to
+be, and makes the API seem more confusing than it actually is.
+</li>
+<li>Toplevel components only: One of the core restrictions of
+the library right now is that it only monitors the existence
+and state of components at the top level of the transition
+container. So, for example, it knows if a button (that is
+a direct child of the transition container) appears, 
+disappears, or changes location/size between screens. But
+it doesn't know whether a JList changed the number of items
+between screens. This makes the library unsuitable for
+transitioning between components that change internal state
+between screens.<br />
+This is a pretty important transition to handle; it's just
+one that the library does not solve. Yet. I would like to
+address that problem eventually (hint: it's not an easy
+one. Or at least no easy solution has occurred to me. Yet.)
+</li>
+<li>First transition startup performance: Various performance
+issues have been addressed since the book demos first came
+out, but that first transition still has more of a hiccup than
+it should. The system is setting up various data structures, 
+images, and other things the first time that simply take
+time. But there has to be a better way to do it, so that the
+first transition is completely smooth. Gotta fix this.
+</li>
+<li>Only size/location tracked: The only state tracked as 
+changing between screens is size and location of components.
+Ideally, there would be more state tracked, or some way to
+track arbitrary state changes (such as something that an
+app could plug into). Or maybe an app should be able to specify
+that a component is changing, even though it doesn't look like
+it to the animtrans library. In any case, this is a limitation
+of the assumptions that the library currently makes.
+</li>
+<li>Various inefficiencies and cleanup TODOs: There are various
+ways of doing things internally that could be improved, such
+as how and when snapshot images of components are taken and
+used, how it is determined whether to redraw components
+(versus showing snapshot images), and so on. The library just
+needs some quality care now that it's out there being seen for
+the first time. It's passed the first hurdle of becoming
+useful; now it needs to become more robust and clean.
+</li>
+</ul>
+  </body>
 </html>
-
