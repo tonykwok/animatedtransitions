@@ -44,7 +44,7 @@ import org.jdesktop.animation.timing.Animator;
  * screen transitions.
  * <p>
  * Subclasses of this base class may override the {@link #init(Animator, Effect)
- * init()}, {@link setup(Graphics2D) setup()), and {@link #paint(Graphics2D) 
+ * init()}, {@link #setup(Graphics2D) setup()}, and {@link #paint(Graphics2D) 
  * paint()} methods to achieve the desired effect.
  *
  * @author Chet Haase

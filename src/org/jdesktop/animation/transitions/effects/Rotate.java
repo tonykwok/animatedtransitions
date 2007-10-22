@@ -105,7 +105,7 @@ public class Rotate extends Effect {
      * center of rotation to use.
      * 
      * @param start The start state of the component
-     * @param start The end state of the component
+     * @param end The end state of the component
      * @param degrees The number of degrees to rotate through during 
      * the transition
      * @param xCenter The x coordinate of the center of rotation

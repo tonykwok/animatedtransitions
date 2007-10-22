@@ -88,7 +88,7 @@ public final class EffectsManager {
      * @param effect The custom effect desired.  A null argument effectively
      * cancels any prior custom value for this component and this 
      * TransitionType; it is equivalent to calling {@link 
-     * #removeEffect(JComponent, transitionType) removeComponent()}.
+     * #removeEffect(JComponent, TransitionType) removeComponent()}.
      * @param transitionType The type of transition to apply this effect on
      * @see TransitionType
      */

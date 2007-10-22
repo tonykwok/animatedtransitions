@@ -247,7 +247,7 @@ public class ComponentState {
     }
 
     /**
-     * Override of {@link Object#equals()} that returns <code>true</code>
+     * Override of {@link Object#equals(Object)} that returns <code>true</code>
      * if either it is the same object exactly or the objects contain
      * the same position, size, and component information. This method
      * is used, for example, to detect whether some start state is equal
@@ -271,7 +271,7 @@ public class ComponentState {
     }
     
     /**
-     * When overriding {@link #equals()}, it is also necessary to
+     * When overriding {@link #equals(Object)}, it is also necessary to
      * overrid <code>hashCode()</code> appropriately.
      */
     @Override
