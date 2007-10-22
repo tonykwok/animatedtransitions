@@ -44,9 +44,9 @@ import java.lang.reflect.Method;
 import javax.swing.JComponent;
 
 /**
- * The structure stores the state of a given transition component that
- * will be used during the transition, which includes the position, the
- * size, and the image snapshot of the component.
+ * This class stores the state of a component that
+ * will be used during the transition. The state includes the position, the
+ * size, and an image snapshot of the component.
  *
  * @author Chet Haase
  */
@@ -69,12 +69,21 @@ public class ComponentState {
      * component.
      */
     private Image componentSnapshot;
-    
+
+    /**
+     * Pack-private version of the constructor. This only exists as
+     * a workaround for allowing ScreenTransition to eagerly load and
+     * initialize its helper classes at construction time, rather than
+     * doing everything during the first transition.
+     */
     ComponentState() {}
     
     /**
-     * Constructor, which takes the given component and derives the state
+     * The constructor takes a component and derives the state
      * information needed (location, size, and image snapshot)
+     * 
+     * @param component the JComponent associated with this
+     * ComponentState
      */
     public ComponentState(JComponent component) {
         this.component = component;
@@ -131,7 +140,11 @@ public class ComponentState {
     public JComponent getComponent() {
         return component;
     }
-    
+
+    /**
+     * Gets the image representation of the component for this state.
+     * The image will be created if it does not exist already.
+     */
     public Image getSnapshot() {
         if (componentSnapshot == null) {
             componentSnapshot = createSnapshot(component);
@@ -140,7 +153,7 @@ public class ComponentState {
     }
 
     /**
-     * The remaining methods exist solely support the static
+     * The remaining methods exist solely to support the static
      * paintSingleBuffered() method.
      */
     
@@ -158,6 +171,11 @@ public class ComponentState {
         }
     }
 
+    /**
+     * Sets up the component to render directly to a destination
+     * Graphics object, without rendering first to the Swing
+     * back buffer
+     */
     private static void setSingleBuffered(JComponent component,
                                           boolean singleBuffered)
     {
@@ -185,7 +203,7 @@ public class ComponentState {
      * @param g the Graphics into which component will be painted
      */
     public static void paintSingleBuffered(JComponent component,
-                                                    Graphics g)
+                                           Graphics g)
     {
         setSingleBuffered(component, true);
         component.paint(g);
@@ -193,9 +211,10 @@ public class ComponentState {
     }
 
     /**
-     * This variation paints the component including whatever is behind it;
-     * this handles the case where the component is not opaque.
-     * This is useful/required for taking a snapshot of the transition container
+     * Paints the component in single-buffered mode, including whatever is 
+     * behind it.
+     * This approach handles the case where the component is not opaque, which
+     * is useful for taking a snapshot of the transition container
      * background, for example.
      */
     public static void paintHierarchySingleBuffered(JComponent component,
@@ -226,7 +245,16 @@ public class ComponentState {
         topmost.paint(g);
         setSingleBuffered(topmost, false);
     }
-    
+
+    /**
+     * Override of {@link Object#equals()} that returns <code>true</code>
+     * if either it is the same object exactly or the objects contain
+     * the same position, size, and component information. This method
+     * is used, for example, to detect whether some start state is equal
+     * to some other end state, which helps in determining whether a component
+     * is changing during the course of a transition.
+     */
+    @Override
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;
@@ -242,6 +270,11 @@ public class ComponentState {
         return false;
     }
     
+    /**
+     * When overriding {@link #equals()}, it is also necessary to
+     * overrid <code>hashCode()</code> appropriately.
+     */
+    @Override
     public int hashCode() {
         int result = 17;
         result = 37 * result + x;
@@ -252,6 +285,10 @@ public class ComponentState {
         return result;
     }
     
+    /**
+     * Utility method (useful in debugging) that returns the salient
+     * data of this <code>ComponentState</code>.
+     */
     public String toString() {
         return "ComponentState: x, y, w, h, component = " +
                 x + ", " + y + ", " + width + ", " + height + ", " + 

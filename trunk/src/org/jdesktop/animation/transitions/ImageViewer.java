@@ -38,9 +38,10 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 
 /**
- * Debugging facility; if you create an ImageViewer with an image, it will
+ * This class is a debugging too.
+ * If you create an ImageViewer with an image, it will
  * pop up a separate window displaying that image.  This is useful for
- * debugging, for example, issues with the transition images.
+ * debugging issues, for example, with the transition images.
  *
  * @author Chet Haase
  */
@@ -68,7 +69,8 @@ class ImageViewer extends JFrame {
      */
     private class ImageViewerComponent extends JComponent {
         
-        public void paint(Graphics g) {
+        @Override
+        protected void paintComponent(Graphics g) {
             g.drawImage(image, 0, 0, null);
         }
     }

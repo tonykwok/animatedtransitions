@@ -101,7 +101,10 @@ public class CompositeEffect extends Effect {
 	}
         super.setStart(start);
     }
-    
+
+    /**
+     * Initializes all child effects at the start of a transition.
+     */
     @Override
     public void init(Animator animator, Effect parentEffect) {
         for (Effect effect : effects) {
@@ -110,6 +113,9 @@ public class CompositeEffect extends Effect {
         super.init(animator, null);
     }
 
+    /**
+     * Calls <code>cleanup()</code> on all child effects.
+     */
     @Override
     public void cleanup(Animator animator) {
         for (Effect effect : effects) {

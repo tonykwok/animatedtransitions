@@ -31,8 +31,6 @@
 
 package org.jdesktop.animation.transitions.effects;
 
-import java.awt.Dimension;
-import java.awt.Graphics2D;
 import java.awt.Point;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.interpolation.PropertySetter;
@@ -42,37 +40,44 @@ import org.jdesktop.animation.transitions.Effect;
 /**
  * Effect that moves a component from its position in the start
  * state to its position in the end state, based on linear interpolation
- * between the two points during the time of the animated transition.
- * 
- * The class extends ComponentImageEffect to use a simple image copy
- * for rendering the component rather than re-rendering the actual
- * component during each frame.
- * 
- * 
+ * between the two endpoints over the duration of the transition.
+ *
  * @author Chet Haase
  */
 public class Move extends Effect {
-    
+
     private PropertySetter ps;
-    
-    public Move() {}
-    
+
+    public Move() {
+    }
+
     /**
-     * REMIND: docs
+     * Constructor that takes both start and end states, from which the
+     * endpoints of the Move effect will be derived.
      */
     public Move(ComponentState start, ComponentState end) {
-	setComponentStates(start, end);
+        setComponentStates(start, end);
     }
-    
+
+    /**
+     * Initializes the effect, adding an animation
+     * target that will move the component of the effect from the start to
+     * the end point during the course of the transition.
+     */
+    @Override
     public void init(Animator animator, Effect parentEffect) {
         Effect targetEffect = (parentEffect == null) ? this : parentEffect;
         ps = new PropertySetter(targetEffect, "location", 
-                new Point(getStart().getX(), getStart().getY()),
+                new Point(getStart().getX(), getStart().getY()), 
                 new Point(getEnd().getX(), getEnd().getY()));
         animator.addTarget(ps);
         super.init(animator, null);
     }
-    
+
+    /**
+     * Removes the moving target from the animation to avoid
+     * leaking resources
+     */
     @Override
     public void cleanup(Animator animator) {
         animator.removeTarget(ps);

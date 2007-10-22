@@ -40,14 +40,15 @@ import org.jdesktop.animation.transitions.Effect;
 
 /**
  * Effect that resizes a component during the transition.
- * This effect uses an image representation of the component instead of
- * re-rendering the component on every frame.
- * 
  * 
  * @author Chet Haase
  */
 public class Scale extends Effect {
     
+    // Two property setters to animate both the width and height of 
+    // the component. Note that the actual width/height properties are
+    // in Effect itself; we are merely setting up an animation here to
+    // vary those existing properties.
     private PropertySetter psWidth, psHeight;
     
     public Scale() {
@@ -55,12 +56,21 @@ public class Scale extends Effect {
         setRenderComponent(true);
     }
     
-    /** Creates a new instance of Scale */
+    /**
+     * Creates a new instance of Scale with start and end states for
+     * the component
+     */
     public Scale(ComponentState start, ComponentState end) {
+        // Call default constructor to initialize important state
         this();
 	setComponentStates(start, end);
     }
     
+    /**
+     * Initializes the effect, adding animation
+     * targets that will scale the component of the effect from the start to
+     * the end sizes during the course of the transition.
+     */
     @Override
     public void init(Animator animator, Effect parentEffect) {
         Effect targetEffect = (parentEffect == null) ? this : parentEffect;
@@ -73,6 +83,10 @@ public class Scale extends Effect {
         super.init(animator, null);
     }
     
+    /**
+     * Removes the scaling targets from the animation to avoid
+     * leaking resources
+     */
     @Override
     public void cleanup(Animator animator) {
         animator.removeTarget(psWidth);
