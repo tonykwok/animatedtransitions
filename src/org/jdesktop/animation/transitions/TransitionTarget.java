@@ -37,21 +37,21 @@ package org.jdesktop.animation.transitions;
  * process, so that the application can modify the application 
  * state appropriately.
  * 
+ * @see ScreenTransition#ScreenTransition(JComponent, TransitionTarget, int)
+ * @see ScreenTransition#ScreenTransition(JComponent, TransitionTarget, Animator)
+ * 
  * @author Chet Haase
  */
 public interface TransitionTarget {
     
     /**
-     * This method is called during the <code>start</code> method
-     * of TransitionPanel.
+     * This method is called during the {@link ScreenTransition#start()} method.
      * <p>
      * Implementors will change the UI in their transition container in
      * this method. This tells ScreenTransition the end-state of the components
      * for the upcoming transition.  After this method is complete, 
-     * ScreenTransition has the information it needs to run the transition
-     * and the animation will begin.
-     *@see ScreenTransition#ScreenTransition(JComponent, TransitionTarget, int)
-     *@see ScreenTransition#ScreenTransition(JComponent, TransitionTarget, Animator)
+     * <code>ScreenTransition</code> has the information it needs to run 
+     * the transition and the animation will begin.
      */
     public void setupNextScreen();
     

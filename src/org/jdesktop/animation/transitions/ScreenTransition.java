@@ -46,14 +46,13 @@ import org.jdesktop.animation.timing.TimingTargetAdapter;
 import org.jdesktop.animation.timing.interpolation.PropertySetter;
 
 /**
- * This class is used to facilitate animated transitions in an application.
- * 
- * ScreenTransition is given a container in a Swing application.  
+ * This class is used to run animated transitions in an application.
+ * <p>
+ * <code>ScreenTransition</code> is given a container in a Swing application.  
  * When the application wishes to transition from one state of the application
- * to another, the <code>startTransition</code> method is called, which
- * calls back into the application to first reset the state of the 
- * application, then set up the following state of the application.
- * Then ScreenTransition runs an animation from the previous state 
+ * to another, the {@link #start()} method is called, which
+ * calls back into the application to set up the next state of the GUI.
+ * Then <code>ScreenTransition</code> runs an animation from the previous state 
  * of the application to the new state.
  *
  * @author Chet Haase
@@ -84,7 +83,8 @@ public class ScreenTransition {
      * we need (specifically, it overlays the area that we need to 
      * render during the transition); the only trick is that we must
      * position the rendering correctly since the glass pane typically
-     * covers the entire application frame.
+     * covers the entire application frame, but in this case the transition
+     * container may only occupy a portion of the frame.
      */
     
     /**
@@ -119,21 +119,21 @@ public class ScreenTransition {
         
     /**
      * The user-defined code which ScreenTransition will call
-     * to reset and setup the previous/next states of the application
-     * during the transition setup process.
+     * to setup the next state of the GUI when a transition is
+     * started.
      */
     private TransitionTarget transitionTarget;
 
     /**
      * If the application has already set their own custom glass pane,
      * we save that component here before using the glass pane for our
-     * own purposes, and then we restore the original glass pane when
+     * own purposes. We then restore the original glass pane when
      * the animation has completed.
      */
     private Component savedGlassPane;
     
     /**
-     * Timing engine for the transition animation.
+     * Animation engine for the transition.
      */
     private Animator animator = null;
 
@@ -142,8 +142,8 @@ public class ScreenTransition {
      * JComponent that they wish to transition and the TransitionTarget
      * which supplies the callback methods called during the transition
      * process.
-     * @param transitionComponent JComponent that the application wishes
-     * to run the transition on.
+     * @param transitionComponent JComponent in which the application wishes
+     * to run the transition.
      * @param transitionTarget Implementation of <code>TransitionTarget</code>
      * interface which will be called during transition process.
      */
@@ -158,7 +158,7 @@ public class ScreenTransition {
         this.animationLayer.setVisible(false);
         // Hack: pre-warm PropertySetter, AnimationState, and ComponentState
         // just to get some static initializers
-        // out of the way that we will need to process before the first
+        // out of the way that will needed before the first
         // transition can start
         PropertySetter propertySetter = new PropertySetter(
                 transitionComponent, "location", 
@@ -169,9 +169,36 @@ public class ScreenTransition {
         createTransitionImages();
     }
     
+    /**`
+     * Constructor that takes an Animator that will be used to drive the
+     * ScreenTransition.  Transition will start if either {@link
+     * #start} is called or {@link Animator#start} is called.
+     * @throws IllegalStateException if animator is already running
+     * @throws IllegalArgumentException animator must be non-null
+     * @param transitionComponent JComponent in which the application wishes
+     * to run the transition.
+     * @param transitionTarget Implementation of {@link TransitionTarget}
+     * interface which will be called during transition process.
+     * @param animator the animator that defines the characteristics of
+     * the transition animation, such as its duration
+     * @see Animator#isRunning()
+     * @see Animator#start()
+     */
+    public ScreenTransition(JComponent transitionComponent,
+            TransitionTarget transitionTarget, Animator animator) {
+        this(transitionComponent, transitionTarget);
+        setAnimator(animator);
+    }    
+
     /**
      * Constructor that takes a simple duration.  The Animator used to
      * drive this ScreenTransition will be created internally.
+     * @param transitionComponent JComponent in which the application wishes
+     * to run the transition.
+     * @param transitionTarget Implementation of {@link TransitionTarget}
+     * interface which will be called during transition process.
+     * @param duration the length of time in milliseconds that the transition
+     * will last
      */
     public ScreenTransition(JComponent transitionComponent,
             TransitionTarget transitionTarget, int duration) {
@@ -180,7 +207,7 @@ public class ScreenTransition {
     }
     
     /**
-     * Create the transition images here and in AnimationManager if necessary
+     * Create the transition images here and in AnimationManager if necessary.
      */
     private void createTransitionImages() {
         int cw = containerLayer.getWidth();
@@ -197,30 +224,19 @@ public class ScreenTransition {
     
     /**
      * Listen for changes to the transition container size and recreate
-     * transition images as necessary
+     * transition images as necessary. Doing this on component size
+     * change events prevents having to do it as needed at the start of
+     * the next transition, which can cause a unwanted delay in that
+     * animation.
      */
     private class ContainerSizeListener extends ComponentAdapter {
         public void componentResized(ComponentEvent ce) {
             createTransitionImages();
         }
     }
-    /**`
-     * Constructor that takes an Animator that will be used to drive the
-     * ScreenTransition.  Transition will start if either {@link
-     * #start} is called or {@link Animator#start} is called.
-     * @throws IllegalStateException if animator is already running
-     * @throws IllegalArgumentException animator must be non-null
-     * @see Animator#isRunning()
-     * @see Animator#start()
-     */
-    public ScreenTransition(JComponent transitionComponent,
-            TransitionTarget transitionTarget, Animator animator) {
-        this(transitionComponent, transitionTarget);
-        setAnimator(animator);
-    }    
 
     /**
-     * Returns Animator object that drives this ScreenTransition.
+     * Returns <code>Animator</code> object that drives this ScreenTransition.
      * @return the Animator that drives this ScreenTransition
      */
     public Animator getAnimator() {
@@ -261,10 +277,13 @@ public class ScreenTransition {
     
     /**
      * Begin the transition from the current application state to the
-     * next one.  This method will call into the TransitionTarget specified
-     * in the ScreenTransition constructor: <code>setupNextScreen()</code> will
+     * next one.  This method will start the transition's {@link Animator}
+     * which will cause the transition to begin. This will result in 
+     * a call into the {@link TransitionTarget} specified
+     * in the <code>ScreenTransition</code> constructor: 
+     * <code>setupNextScreen()</code> will
      * be called to allow the application to set up the state of the next
-     * screen.  After this call, the transition animation will begin.
+     * screen.  Then the transition animation will begin.
      */
     public void start() {
         if (animator.isRunning()) {
@@ -280,11 +299,22 @@ public class ScreenTransition {
      * directly, but there is no need to expose those methods as public API
      * (which would be necessary since TimingTarget needs the methods to
      * be public). Having this as an internal private class hides the 
-     * methods from the ScreenTransition API while having the same
+     * methods from the ScreenTransition API while allowing the same
      * functionality.
      */
     private TimingTarget transitionTimingTarget = new TimingTargetAdapter() {
 
+        /**
+         * This method is called as a result of a call to {@link 
+         * ScreenTransition#start()}. The method sets up appropriate state
+         * for the transition, creating any necessary background images,
+         * capturing the current state of the components in the transition 
+         * container, calling the application's setupNextScreen()
+         * method, and capturing the new state of the components.
+         * It then determines the effects to use during the transition,
+         * based on the changes taking place in the components between the
+         * two screens and initializes those effects appropriately.
+         */
         public void begin() {
             // Make sure that our background images exist and is the right size
             createTransitionImages();
@@ -366,4 +396,3 @@ public class ScreenTransition {
         }
     };
 }
-

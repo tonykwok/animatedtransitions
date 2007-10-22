@@ -48,18 +48,25 @@ import org.jdesktop.animation.transitions.Effect;
  * @author Chet Haase
  */
 public abstract class Fade extends Effect {
-    
+
+    // Property used to set the degree of opacity of the effect. This 
+    // property is used later in setup() to create an appropriate
+    // AlphaComposite object.
     private float opacity;
     
+    /**
+     * This method is called by an animation set up by subclasses to
+     * vary the opacity during the transition.
+     */
     public void setOpacity(float opacity) {
         this.opacity = opacity;
     }
     
     /**
      * This method is called prior to <code>paint()</code> during every 
-     * frame of the transition animation.  It calculates the
-     * opacity based on the elapsed fraction of the animation and
-     * sets the <code>AlphaComposite</code> value on the 
+     * frame of the transition animation.  It sets up 
+     * an <code>AlphaComposite</code> object based on the current
+     * opacity and sets that composite on the
      * <code>Graphics2D</code> object appropriately.
      */
     @Override

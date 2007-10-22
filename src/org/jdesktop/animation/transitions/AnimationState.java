@@ -36,11 +36,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import javax.swing.JComponent;
 import org.jdesktop.animation.timing.Animator;
-
-import org.jdesktop.animation.transitions.Effect;
-import org.jdesktop.animation.transitions.ComponentState;
 import org.jdesktop.animation.transitions.effects.CompositeEffect;
-import org.jdesktop.animation.transitions.EffectsManager;
 import org.jdesktop.animation.transitions.effects.FadeIn;
 import org.jdesktop.animation.transitions.effects.FadeOut;
 import org.jdesktop.animation.transitions.effects.Move;
@@ -48,38 +44,48 @@ import org.jdesktop.animation.transitions.effects.Scale;
 import org.jdesktop.animation.transitions.effects.Unchanging;
 
 /**
- * This class holds the start and/or end states for a JComponent.  It also
- * determine (at <code>init()</code> time) the Effect to use during the
- * upcoming transition and calls the appropriate Effect during the
- * <code>paint()</code> method to cause the correct rendering of the
- * component during the transition.
+ * This class holds the start and/or end states for a <code>JComponent</code>.  
+ * It also determines (at <code>init()</code> time) the <code>Effect</code> 
+ * to use during the transition and calls the appropriate Effect during the
+ * {@link #paint(Graphics2D) paint()} method to cause the appropriate rendering
+ * of the component during the transition.
  *
  * @author Chet Haase
  */
 class AnimationState {
-    
+
     /**
-     * The component for this AnimationState; there is one component per
+     * The component for this AnimationState. There is one component per
      * state, with either a start, an end, or both states.
      */
     private JComponent component;
-    
     /**
-     * Start/end states for this AnimationState; these may be set to a non-null
+     * Start/end states for this AnimationState. These may be set to a non-null
      * value or not, depending on whether the component exists in the
-     * respective screen of the transition.
+     * respective start/end screen(s) of the transition.
      */
-    private ComponentState start, end;
-    
+    private ComponentState start;
+    private ComponentState end;
     /**
      * Effect used to transition between the start and end states for this
      * AnimationState.  This effect is set during the init() method just
      * prior to running the transition.
      */
     private Effect effect;
-    
-    AnimationState() {}
-    
+
+    /**
+     * Default constructor. This object is typically constructed with a
+     * JComponent or a ComponentState object, not through the default
+     * constructor. This constructor is currently used
+     * simply to force some eager initialization of the system when
+     * ScreenTransition is first instantiated.
+     */
+    AnimationState() {
+    }
+
+    /**
+     * Creates the AnimationState with the given start/end ComponentState
+     */
     AnimationState(ComponentState state, boolean isStart) {
         this.component = state.getComponent();
         if (isStart) {
@@ -88,7 +94,7 @@ class AnimationState {
             end = state;
         }
     }
-    
+
     /**
      * Constructs a new AnimationState with either the start
      * or end state for the component.
@@ -102,7 +108,7 @@ class AnimationState {
             end = compState;
         }
     }
-    
+
     void setStart(ComponentState compState) {
         start = compState;
     }
@@ -110,66 +116,73 @@ class AnimationState {
     void setEnd(ComponentState compState) {
         end = compState;
     }
-    
+
     ComponentState getStart() {
         return start;
     }
-    
+
     ComponentState getEnd() {
         return end;
     }
-    
+
     Component getComponent() {
         return component;
     }
 
     /**
      * Called just prior to running the transition.  This method examines the
-     * start and end states as well as the Effect repository to 
+     * start and end states as well as the Effect repository to
      * determine the appropriate Effect to use during the transition for
      * this AnimationState.  If there is an existing custom effect defined
-     * for the component for this type of transition, we will use that
-     * effect, otherwise we will default to the appropriate effect (fading
+     * for the component for this type of transition, that effect will be used,
+     * Otherwise, the system will use the appropriate default effect (fading
      * in, fading out, or moving/resizing).
      */
     void init(Animator animator) {
         if (start == null) {
-            effect = EffectsManager.getEffect(component,
-                EffectsManager.TransitionType.APPEARING);
+            // component is appearing during transition; search for existing
+            // custom effects for this transition type
+            effect = EffectsManager.getEffect(component, EffectsManager.TransitionType.APPEARING);
             if (effect == null) {
                 effect = new FadeIn(end);
             } else {
                 effect.setEnd(end);
             }
         } else if (end == null) {
-            effect = EffectsManager.getEffect(component,
-                EffectsManager.TransitionType.DISAPPEARING);
+            // component is disappearing during transition; search for existing
+            // custom effects for this transition type
+            effect = EffectsManager.getEffect(component, EffectsManager.TransitionType.DISAPPEARING);
             if (effect == null) {
                 effect = new FadeOut(start);
             } else {
                 effect.setStart(start);
             }
         } else {
-            effect = EffectsManager.getEffect(component,
-                EffectsManager.TransitionType.CHANGING);
+            // component is in both screens; search for existing
+            // custom effects for this transition type
+            effect = EffectsManager.getEffect(component, 
+                    EffectsManager.TransitionType.CHANGING);
             if (effect == null) {
-                // No custom effect; use move/scale combinations
+                // No custom effect exists; use move/scale combinations
                 // as appropriate
-                boolean move = false, scale= false;
+                boolean move = false;
+                boolean scale = false;
                 if (start.getX() != end.getX() || start.getY() != end.getY()) {
+                    // position changes; use Move effect
                     move = true;
                 }
-                if (start.getWidth() != end.getWidth() ||
-                        start.getHeight() != end.getHeight()) {
+                if ((start.getWidth() != end.getWidth()) || 
+                        (start.getHeight() != end.getHeight())) {
+                    // size changes; use Scale effect
                     scale = true;
                 }
                 if (move) {
                     if (scale) {
-                        // move/scale
+                        // move/scale composite effect needed
                         effect = new Move(start, end);
                         Effect scaleEffect = new Scale(start, end);
                         effect = new CompositeEffect(effect);
-                        ((CompositeEffect)effect).addEffect(scaleEffect);
+                        ((CompositeEffect) effect).addEffect(scaleEffect);
                     } else {
                         // just move
                         effect = new Move(start, end);
@@ -189,25 +202,31 @@ class AnimationState {
                 effect.setEnd(end);
             }
         }
+        // initialize the effect that we are about to run in the transition
         effect.init(animator, null);
     }
-    
+
+    /**
+     * Clean up any artifacts created during the transition. This could
+     * include, for example, PropertySetter objects (or other TimingTargets)
+     * added to the animator during the init() phase.
+     */
     void cleanup(Animator animator) {
         effect.cleanup(animator);
     }
-    
+
     /**
-     * Render this AnimationState into the given Graphics object with the
-     * given elapsed fraction for the transition.  This is done by calling
-     * into the effect to first set up the Graphics object
-     * then to do the actual rendering using that Graphics object.
+     * Render this AnimationState into the given Graphics object, by
+     * asking the Effect to render itself.
      */
     void paint(Graphics g) {
         if (effect != null) {
-            Graphics2D g2d = (Graphics2D)g.create();
+            // Create/use temporary Graphics object to avoid leaking 
+            // state between one AnimationState and the next during
+            // the transition
+            Graphics2D g2d = (Graphics2D) g.create();
             effect.render(g2d);
             g2d.dispose();
         }
     }
 }
-

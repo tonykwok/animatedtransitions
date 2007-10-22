@@ -47,8 +47,7 @@ import javax.swing.JComponent;
 public final class EffectsManager {
     
     /**
-     * An enum that describes the type of transition that this effect
-     * should be used for.
+     * The type of transition that this effect should be used for.
      */
     public static enum TransitionType {
         /**
@@ -80,21 +79,26 @@ public final class EffectsManager {
      * basis for the application.  Note that these custom effects are
      * application wide for the duration of the process, or until a new
      * or null effect is set for this component.  Note also that custom
-     * effects are re   gistered according to the <code>TransitionType</code>.
+     * effects are registered according to the {@link TransitionType}.
      * So a custom <code>TransitionType.CHANGING</code> effect for a 
      * given component will have no bearing on the effect used in a 
      * transition where the component either appears or disappers between
      * the transition states.
-     * @param component The Component that this effect should be applied to
+     * @param component The JComponent that this effect should be applied to
      * @param effect The custom effect desired.  A null argument effectively
      * cancels any prior custom value for this component and this 
-     * TransitionType
+     * TransitionType; it is equivalent to calling {@link 
+     * #removeEffect(JComponent, transitionType) removeComponent()}.
      * @param transitionType The type of transition to apply this effect on
      * @see TransitionType
      */
     public static void setEffect(JComponent component, Effect effect,
                                  TransitionType transitionType)
     {
+        if (effect == null) {
+            removeEffect(component, transitionType);
+            return;
+        }
 	switch (transitionType) {
 	    case CHANGING:
 		cachedChangingEffects.put(component, effect);
@@ -112,13 +116,15 @@ public final class EffectsManager {
     
     /**
      * This method is called during the setup phase for any transition.  It 
-     * queries the cache for custom effects for a given component and
-     * <code>TransitionType</code>
+     * queries the cache for a custom effect associated with a given component 
+     * and <code>TransitionType</code>
      * 
      * @param component The component we are querying on behalf of
-     * @param transitionType The type of transition that the component
-     * is going to undergo
-     * @return Effect A null return value indicates that there is
+     * @param transitionType The type of transition that the effect would
+     * be used on for this component
+     * @return Effect The custom effect associated with this component
+     * and <code>transitionType</code>. 
+     * A null return value indicates that there is
      * no custom effect associated with this component and transition type
      */
     public static Effect getEffect(JComponent component,
@@ -137,12 +143,12 @@ public final class EffectsManager {
     }
     
     /**
-     * This method removes an effect for the specified (if it exists) from the 
-     * manager for the specified <code>transitionType</code>.
-     * @param component The component that the effect is currently linked
-     * to in the manager
-     * @param transitionType The type of transition that the component
-     * is going to undergo
+     * This method removes an effect for the specified component and
+     * <code>transitionType</code>, if an effect exists.
+     * @param component The component associated with the effect that
+     * should be removed
+     * @param transitionType The type of transition associated with the
+     * component and effect
      */
     public static void removeEffect(JComponent component, 
                                     TransitionType transitionType) {
@@ -161,8 +167,8 @@ public final class EffectsManager {
     /**
      * This method clears all effects for the specified
      * <code>transitionType</code>.
-     * @param transitionType The type of transition that the component
-     * is going to undergo
+     * @param transitionType The type of transition for which all custom
+     * effects should be cleared
      */
     public static void clearEffects(TransitionType transitionType) {
 	switch (transitionType) {
@@ -178,7 +184,7 @@ public final class EffectsManager {
     }
 
     /**
-     * This method clears the manager of all effects previously set.
+     * This method clears the manager of all custom effects currently set.
      */
     public static void clearAllEffects() {
         cachedChangingEffects.clear();

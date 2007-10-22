@@ -31,15 +31,14 @@
 
 package org.jdesktop.animation.transitions.effects;
 
-import java.awt.Rectangle;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.interpolation.PropertySetter;
 import org.jdesktop.animation.transitions.ComponentState;
 import org.jdesktop.animation.transitions.Effect;
 
 /**
- * Simple subclass of Fade effect that will fade a component from nothing to
- * an existing end state.
+ * Simple subclass of Fade effect that will fade a component from transparent to
+ * fully opaque.
  *
  * @author Chet Haase
  */
@@ -47,6 +46,11 @@ public class FadeIn extends Fade {
     
     private PropertySetter ps;
     
+    /**
+     * Initializes the effect, adding an animation
+     * target that will fade the component of the effect in from
+     * transparent to opaque during the course of the transition.
+     */
     @Override
     public void init(Animator animator, Effect parentEffect) {
         ps = new PropertySetter(this, "opacity", 0f, 1f);
@@ -55,6 +59,10 @@ public class FadeIn extends Fade {
         super.init(animator, null);
     }
     
+    /**
+     * Removes the fading target from the animation to avoid
+     * leaking resources
+     */
     @Override
     public void cleanup(Animator animator) {
         animator.removeTarget(ps);
@@ -63,11 +71,10 @@ public class FadeIn extends Fade {
     public FadeIn() {}
     
     /** 
-     * Creates a new instance of FadeIn with the given end state.
+     * Creates a new instance with the given end state.
      *
      * @param end The <code>ComponentState</code> at the end of the
-     * transition; this is what we are fading into (from nothing into this
-     * final representation).
+     * transition; this is what we are fading to.
      */
     public FadeIn(ComponentState end) {
 	setEnd(end);

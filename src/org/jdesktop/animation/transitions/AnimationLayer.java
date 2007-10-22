@@ -37,27 +37,39 @@ import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 
 /**
- * This is the component where the transition animations actually run.
- * During a transition, this layer becomes visible in the TransitionPanel.
- * Regular repaint() events occur on the TransitionPanel, which trickle down
- * to paint() events here.  That method, in turn, calls paint() on
- * the AnimationManager to handle rendering the various elements of the
- * animation into the Graphics object.
+ * This is the component where the transition animation is displayed.
+ * During a transition, this layer becomes visible as the GlassPane
+ * of the application window that contains the transition container.
+ * Repaints of this component happen during the transition, which become
+ * paintComponent() events here. The paintComponent method simply
+ * copies the current transition image (into which the current frame of
+ * the transition animation was rendered) to its component Graphics and
+ * Swing copies it onto window.
  *
  * @author Chet Haase
  */
 class AnimationLayer extends JComponent {
     
+    // Need to keep track of where the transition container lives in the
+    // window so that we copy the transition image to the proper place
+    // in the window-wide GlassPane
     private Point componentLocation = new Point();
+    
+    // We call into ScreenTransition to get the current transition image
+    // which holds each frame's rendering during the transition
     private final ScreenTransition screenTransition;
     
+    /**
+     * Construct the AnimationLayer with a reference to the ScreenTransition
+     * object, which will be used later at paintComponent() time
+     */
     public AnimationLayer(ScreenTransition screenTransition) {
         setOpaque(false);        
         this.screenTransition = screenTransition;
     }
     
     /**
-     * Called from TransitionPanel to setup the correct location to
+     * Called from ScreenTransition to set up the correct location to
      * copy the animation to in the glass pane
      */
     public void setupBackground(JComponent targetComponent) {
@@ -69,7 +81,7 @@ class AnimationLayer extends JComponent {
     }
     
     /**
-     * Called during normal Swing repaint process on the TransitionPanel.
+     * Called during the Swing repaint process for this component.
      * This simply copies the transitionImage from ScreenTransition into
      * the appropriate location in the glass pane.
      */

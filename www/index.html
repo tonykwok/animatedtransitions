@@ -7,7 +7,8 @@
   <body>
   <center>
   <h1>Animated Transitions</h1>
-  <h4>Chet Haase</h4>
+  <i>A library for simplifying animated segues between application states</i>
+    <h4><a href="http://weblogs.java.net/blog/chet">Chet Haase</a></h4>
 </center>
 <p>
 <ul>
@@ -15,6 +16,7 @@
 <li><a href="Downloads">Downloads</a></li>
 <li><a href="Resources">Resources</a></li>
 <li><a href="Overview">Change Log</a></li>
+<li><a href="Limitations">Limitations</a></li>
 </ul>
 <h2>
 <a name="Overview">Overview</a>
@@ -65,16 +67,40 @@ Source</a>
 <a name="Resources">Resources</a>
 </h2>
 <p>
-The library is fully documented in the book 
+    <table border="0" width="100%" cellspacing="3">
+        <tbody>
+            <tr>
+                <td><img src="BookCoverSmallBetter.jpg"/>
+                </td>
+                <td>The library is fully documented in the book 
 <a href="http://filthyrichclients.org">Filthy Rich Clients</a>
-(see Chapter 18, cleverly entitled "Animated Transitions").
-There is also a brief tutorial with a sample application
-in the java.net article
-"Create Moving Experiences with Animated Transitions".
+(see Chapter 18, cleverly entitled "Animated Transitions"). There are two
+demo applications using Animated Transitions in the book, and the chapter details
+how custom effects are used and how various aspects of the
+library get their job done. The two demo applications are available
+on <a href="http://filthyrichclients.org">the book's website</a>.</td>
+            </tr>
+        </tbody>
+    </table>
 </p>
-<p>Finally, check out the demos on the 
+<p>
+Also:
+</p>
+<p>
+    <ul>
+        <li><b>Article</b>: There is a brief tutorial with another sample application
+        in an upcoming java.net article (stay tuned).</li>
+        <li><b>Podcast</b>: The <a href="http://www.javaposse.com/">Java Posse</a> discussed
+    the library in their 
+<a href="http://www.javaposse.com/index.php?post_id=268813">podcast #147</a>.</li>
+<li><b>Demos</b>: Finally, check out the demos on the 
 <a href="filthyrichclients.org">book's website</a>,
-particularly those for Chapter 18.
+    particularly those for Chapter 18.</li>
+    <li><b>Blog</b>: I write about related technologies (graphics and animation)
+    on my java.net weblog. I'm sure that I will post stuff about the
+    Animated Transitions library there as I continue to develop it.
+</li>
+    </ul>    
 </p>
 <p>
 Otherwise, feel free to download the library, the javadocs, and
@@ -84,7 +110,7 @@ the source code. And start using it - move your users!
 <a name="UpdateLog">Update Log</a>
 </h2>
 <p>
-<b>October 17, 2007</b>: Release 0.1 debuted!
+<b>October 22, 2007</b>: Release 0.1 debuted!
 </p>
 <p>
 This is the first source release. It's nearly the same API as in
@@ -93,7 +119,13 @@ are documented on the book's website's "Errata" page), although
 there have been some important performance and leak fixes since
 the initial demos were released.
 </p>
+<h2>
+<a name="Limitations">Limitations</a>
+</h2>
 <p>
+    As of October 22, 2007:
+    </p>
+    <p>
 The library is, I subjectively think, a pretty cool utility for
 making screen transtions wayyyyyyyyyyyyyyyyyyyyyyyyyy way
 easier than they are if you're simply hand-coding all of the
@@ -103,7 +135,7 @@ as notes on what to expect, what not to expect, and what
 I hope to work on in future releases.
 </p>
 <ul>
-<li>API: There are a lot of methods that shouldn't be public, 
+<li><b>API</b>: There are a lot of methods that shouldn't be public, 
 but which happen to be just because of how the packages are 
 currently structured. This should be fixed soon. The actual
 API that you should use is actually quite small. The API
@@ -111,7 +143,7 @@ that custom effect developers use is slightly larger. But
 the API exposed in the JavaDocs is larger than it needs to
 be, and makes the API seem more confusing than it actually is.
 </li>
-<li>Toplevel components only: One of the core restrictions of
+<li><b>Toplevel components only</b>: One of the core restrictions of
 the library right now is that it only monitors the existence
 and state of components at the top level of the transition
 container. So, for example, it knows if a button (that is
@@ -126,7 +158,7 @@ one that the library does not solve. Yet. I would like to
 address that problem eventually (hint: it's not an easy
 one. Or at least no easy solution has occurred to me. Yet.)
 </li>
-<li>First transition startup performance: Various performance
+<li><b>First transition startup performance</b>: Various performance
 issues have been addressed since the book demos first came
 out, but that first transition still has more of a hiccup than
 it should. The system is setting up various data structures, 
@@ -134,7 +166,7 @@ images, and other things the first time that simply take
 time. But there has to be a better way to do it, so that the
 first transition is completely smooth. Gotta fix this.
 </li>
-<li>Only size/location tracked: The only state tracked as 
+<li><b>Only size/location tracked</b>: The only state tracked as 
 changing between screens is size and location of components.
 Ideally, there would be more state tracked, or some way to
 track arbitrary state changes (such as something that an
@@ -143,7 +175,7 @@ that a component is changing, even though it doesn't look like
 it to the animtrans library. In any case, this is a limitation
 of the assumptions that the library currently makes.
 </li>
-<li>Various inefficiencies and cleanup TODOs: There are various
+<li><b>Various inefficiencies and cleanup TODOs</b>: There are various
 ways of doing things internally that could be improved, such
 as how and when snapshot images of components are taken and
 used, how it is determined whether to redraw components
