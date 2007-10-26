@@ -48,14 +48,30 @@ in the <a href="Resources">Resources</a> section below.
 <a name="Downloads">Downloads</a>
 </h2>
 <p>
-<b>Version 0.1</b> (October 17, 2007)
-</p>
-<p>
-    <i>Note: This version depends on version 1.0 of the 
+    <i>Note: The current versions depends on version 1.0 of the 
     <a href="http://timingframework.dev.java.net">Timing Framework</a>; you
         will need to get that version from the project site in order to build and
     run Animated Transitions applications.</i>
     </p>
+<p>
+<b>Version 0.11</b> (October 26, 2007)
+</p>
+    <p>
+    <ul>
+<li><a href="http://download.java.net/javadesktop/filthyrichclients/AnimatedTransitions/0.11/AnimatedTransitions-0.11.jar">
+Library</a>
+</li>
+<li><a href="http://download.java.net/javadesktop/filthyrichclients/AnimatedTransitions/0.1/AnimatedTransitions-0.11-doc.zip">
+Javadocs</a>
+</li>
+<li><a href="http://download.java.net/javadesktop/filthyrichclients/AnimatedTransitions/0.1/AnimatedTransitions-0.11-src.zip">
+Source</a>
+</li>
+</ul>
+</p>
+<p>
+<b>Version 0.1</b> (October 17, 2007)
+</p>
     <p>
     <ul>
 <li><a href="http://download.java.net/javadesktop/filthyrichclients/AnimatedTransitions/0.1/AnimatedTransitions-0.1.jar">
@@ -118,6 +134,18 @@ the source code. And start using it - move your users!
 <h2>
 <a name="UpdateLog">Update Log</a>
 </h2>
+<p>
+<b>October 26, 2007</b>: Release 0.11
+</p>
+<p>
+    Minor but important change (to me, at least); I removed the internal
+    hack that required applets/applications to be signed. Basically, the
+    library was using reflection to set an internal property inside of
+    JComponent that disabled double-buffering when rendering transition
+    components to images. There was a better workaround available that
+    required no such hack, so I've changed the code and it is no longer
+    necessary go sign your apps, at least not because of AnimatedTransitions.
+</p>
 <p>
 <b>October 22, 2007</b>: Release 0.1 debuted!
 </p>

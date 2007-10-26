@@ -156,43 +156,6 @@ public class ComponentState {
      * The remaining methods exist solely to support the static
      * paintSingleBuffered() method.
      */
-    
-    private static final Integer ANCESTOR_USING_BUFFER = 1;
-    private static Method JCOMPONENT_SET_FLAG_METHOD;
-
-    static {
-        Method[] methods = JComponent.class.getDeclaredMethods();
-        for (Method method : methods) {
-            if ("setFlag".equals(method.getName())) {
-                JCOMPONENT_SET_FLAG_METHOD = method;
-                JCOMPONENT_SET_FLAG_METHOD.setAccessible(true);
-                break;
-            }
-        }
-    }
-
-    /**
-     * Sets up the component to render directly to a destination
-     * Graphics object, without rendering first to the Swing
-     * back buffer
-     */
-    private static void setSingleBuffered(JComponent component,
-                                          boolean singleBuffered)
-    {
-        // This is a hack to trick Swing to paint directly to the passed in
-        // Graphics instead of the double buffer first, then the Graphics.
-        // The same thing can be done by turning off double buffering
-        // at the RepaintManager level, but this might punt the bufferPerWindow
-        // approach on Mustang, and we don't want that...
-        try {
-            JCOMPONENT_SET_FLAG_METHOD.invoke(component,
-                                              ANCESTOR_USING_BUFFER,
-                                              singleBuffered);
-        } catch (Exception e) {
-            System.err.println("error invoking: " + e);
-            e.printStackTrace();
-        }
-    }
 
     /**
      * Paints the given JComponent in single-buffered mode, which is
@@ -205,9 +168,10 @@ public class ComponentState {
     public static void paintSingleBuffered(JComponent component,
                                            Graphics g)
     {
-        setSingleBuffered(component, true);
-        component.paint(g);
-        setSingleBuffered(component, false);
+        // The print() method in JComponent effectively does what we want;
+        // it paints the component to the given Graphics object without
+        // sending the rendering through the Swing back buffer
+        component.print(g);
     }
 
     /**
@@ -238,12 +202,11 @@ public class ComponentState {
             y += prevTopmost.getY();
             prevTopmost = topmost;
         }
-        setSingleBuffered(topmost, true);
         // Only want to paint the area of the original component
         g.setClip(0, 0, w, h);
         g.translate(-x, -y);
-        topmost.paint(g);
-        setSingleBuffered(topmost, false);
+        topmost.print(g);
+        paintSingleBuffered(topmost, g);
     }
 
     /**
