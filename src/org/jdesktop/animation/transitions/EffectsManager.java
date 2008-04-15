@@ -155,10 +155,13 @@ public final class EffectsManager {
 	switch (transitionType) {
 	    case CHANGING:
 		cachedChangingEffects.remove(component);
+		break;
 	    case APPEARING:
 		cachedAppearingEffects.remove(component);
+                break;
 	    case DISAPPEARING:
 		cachedDisappearingEffects.remove(component);
+                break;
 	    default:
                 throw new InternalError("unknown TransitionType");
 	}
@@ -174,10 +177,13 @@ public final class EffectsManager {
 	switch (transitionType) {
 	    case CHANGING:
 		cachedChangingEffects.clear();
+                break;
 	    case APPEARING:
 		cachedAppearingEffects.clear();
+                break;
 	    case DISAPPEARING:
 		cachedDisappearingEffects.clear();
+                break;
 	    default:
                 throw new InternalError("unknown TransitionType");
 	}
