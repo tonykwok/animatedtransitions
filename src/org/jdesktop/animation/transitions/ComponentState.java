@@ -31,16 +31,12 @@
 
 package org.jdesktop.animation.transitions;
 
-import java.awt.AlphaComposite;
-import java.awt.Color;
-import java.awt.Composite;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.Transparency;
-import java.lang.reflect.Method;
 import javax.swing.JComponent;
 
 /**
